@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<title>pushState</title>
+<meta name="description" content="">
+<meta name="keywords" content="">
+<link href="" rel="stylesheet">
+</head>
+<body>
+	<a id="pushState" href="#test">pushState</a>
+    <a id="replaceState" href="#test">replaceState</a>
+    <script>
+    document.querySelector('#pushState').onclick = function(event){
+    	event.preventDefault();
+
+    	window.history.pushState({
+            title: 'test',
+            url: '/abc',
+            xxx: 'xxx'
+        },'标题', 'url');
+    };
+
+    document.querySelector('#replaceState').onclick = function(event){
+        event.preventDefault();
+
+        window.history.replaceState({
+            title: 'test',
+            url: '/abc',
+            xxx: 'xxx'
+        },'标题', 'url');
+    };
+
+    window.onpopstate = function(){
+    	alert('onpopstate');
+    }
+
+    </script>
+</body>
+</html>

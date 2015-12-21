@@ -1,0 +1,717 @@
+
+<!doctype html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>本地存储哪家强? - By 李永剑(耗子)</title>
+    <link rel="stylesheet" media="all" href="./css/nodeppt2.0.css">
+    <link rel="stylesheet" media="only screen and (max-device-width: 480px)" href="./css/phone.css">
+    <link rel="stylesheet" media="print" href="./css/pdf.css">
+    <link rel="stylesheet" href="./css/monokai_sublime.css">
+    <link rel="stylesheet" href="./css/font-awesome.css">
+</head>
+<body>
+<div class="slides">
+    <slides id="container">
+        <slide class="slide fill" style="background-image:url(img/t01a6fedd0a2c718efe.webp.jpg);background-size:100% 100%"><section class="slide-wrapper"><article class="flexbox vcenter">
+<h1>本地存储哪家强？</h1>
+<h2>本地存储技术在mso的使用，以及友商们的相关技术分析</h2>
+
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><article class="flexbox vcenter">
+<h1><img src="img/t01c3fbe64f119921b5.webp.jpg" alt=""></h1>
+<h2>李永剑（子豪、耗子）</h2>
+<h2>@移动搜索 m.so.com</h2>
+<p>博客： <a href="http://haozi.me" target="_blank">haozi.me</a>
+微博： <a href="http://weibo.com/divli" target="_blank">div.li</a></p>
+
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><article>
+<h2>为什么要使用本地存储？</h2>
+<ul class="moveIn">
+<li>跟踪用户行为</li>
+<li>保存用户状态</li>
+<li>记录容许丢弃的数据</li>
+<li>缓存代码，提高响应速度</li>
+<li>浏览器自带缓存策略不靠谱 <a href="http://www.jianshu.com/p/b3e51b322f0c" target="_blank">传送门</a><ul class="moveIn">
+<li>不抗F5,会产生304，http握手一次不会少</li>
+<li>ctrl + F5 返回全量，甚至直接打到源站</li>
+<li>cdn不靠谱，越是卡慢用户越容易强刷</li>
+<li>360手机浏览器刷新按钮是强刷，不走304</li>
+<li>360搜索app任何请求都是200！ <img src="img/t01e00567ea987ec5b0.webp.jpg" alt=""></li>
+<li><img src="./img/msoapp.png" alt=""></li>
+</ul>
+</li>
+</ul>
+
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><article>
+<h2>有哪些本地存储方案？</h2>
+<ul class="moveIn">
+<li>cookie <a href="http://zh.wikipedia.org/zh/Cookie" target="_blank">viki</a><ul class="moveIn">
+<li>兼容性好，网景都支持</li>
+<li>大小限制4kb</li>
+<li>会带在每个http请求中</li>
+<li>ie下单域50键限制</li>
+<li>用户可以禁用，可以使用navigator.cookieEnabled检测</li>
+</ul>
+</li>
+</ul>
+
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><article>
+<h2>有哪些本地存储方案？</h2>
+<ul class="moveIn">
+<li>userData<ul class="moveIn">
+<li>IE独有</li>
+<li>键个数无限制</li>
+<li>单个值最大64k</li>
+<li>同一个域最大640k</li>
+<li>一些封装userData与localStorage的方案</li>
+</ul>
+</li>
+</ul>
+
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><article>
+<h2>有哪些本地存储方案？</h2>
+<ul class="moveIn">
+<li>Gears<ul class="moveIn">
+<li>基于浏览器插件</li>
+<li>纯本地服务，通过工作池定时与服务器同步</li>
+<li>google已停止维护</li>
+</ul>
+</li>
+<li>Flash Cookies(Local Shared Objects) <ul class="moveIn">
+<li>可跨浏览器共享数据</li>
+<li>依赖flash</li>
+</ul>
+</li>
+<li>Silverlight</li>
+<li>Java</li>
+</ul>
+
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><article>
+<h2>有哪些本地存储方案？</h2>
+<ul class="moveIn">
+<li>canvas 指纹 <a href="http://security.tencent.com/index.php/blog/msg/59" target="_blank">qq安全中心</a><ul class="moveIn">
+<li>同样的canvas绘制操作，在不同的操作系统不同机器上产生的图片不完全相同的，可当作deviceId</li>
+<li>chrome隐身模式下也能记录</li>
+<li>hack</li>
+</ul>
+</li>
+<li>历史记录嗅探 <a href="http://www.75team.com/weekly/issue79.html" target="_blank">奇舞周刊79期</a><ul class="moveIn">
+<li>通过计算访问过的链接的渲染耗时判断</li>
+</ul>
+</li>
+<li>ETags <a href="http://lucb1e.com/rp/cookielesscookies/" target="_blank">demo</a><ul class="moveIn">
+<li>不依赖js</li>
+</ul>
+</li>
+</ul>
+
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><article>
+<h2>有哪些本地存储方案？</h2>
+<ul class="moveIn">
+<li>localStorage/sessionStorage<ul class="moveIn">
+<li>5M大小，接口简单</li>
+<li>除去ie67不支持，兼容性较理想</li>
+<li>简单key value对存储，不支持复杂查询，key value都必须为字符串</li>
+<li>同步</li>
+</ul>
+</li>
+<li>globalStorage<ul class="moveIn">
+<li>FF私有实现，且被FF放弃</li>
+</ul>
+</li>
+<li>window.name<ul class="moveIn">
+<li>session级别</li>
+<li>xss问题,易被攻击</li>
+<li>数据被每三方截获</li>
+</ul>
+</li>
+</ul>
+
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><article>
+<ul class="moveIn">
+<li>webSql(openDatabase)<ul class="moveIn">
+<li>支持复杂查询</li>
+<li>事务支持</li>
+<li>接口较复杂</li>
+<li>异步</li>
+<li>无大小限制</li>
+<li>被w3c扼杀，但目前在webkit家族支持情况很好<a href="http://caniuse.com/#search=websql" target="_blank">canIuse</a></li>
+</ul>
+</li>
+<li>indexedDB<ul class="moveIn">
+<li>无大小限制</li>
+<li>nosql,不支持sql</li>
+<li>异步</li>
+<li>支持程度低<a href="http://caniuse.com/#search=indexedDb" target="_blank">canIuse</a></li>
+</ul>
+</li>
+<li>Application Cache<ul class="moveIn">
+<li>真正的离线，无网络也可访问，有网络也不一定更新</li>
+<li>连同html页一起缓存，不适合动态页</li>
+<li>版本管理每次要更新manifest</li>
+<li>下载完后需要刷一次才能看到新效果</li>
+<li><a href="http://alistapart.com/article/application-cache-is-a-douchebag" target="_blank">满满的都是坑</a></li>
+</ul>
+</li>
+</ul>
+
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><article>
+<h2>深入了解localStorage</h2>
+<pre><code>// 存
+localStorage.foo = &#39;bar&#39;;
+localStorage[&#39;foo&#39;] = &#39;bar&#39;;
+localStorage.setItem(&#39;foo&#39;, &#39;bar&#39;);
+// 取
+localStorage.foo;
+localStorage[&#39;foo&#39;];
+localStorage.getItem(&#39;foo&#39;);
+// 删
+localStorage.removeItem(&#39;foo&#39;);
+// 清
+localStorage.clear();
+</code></pre>
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><article>
+<ul class="moveIn">
+<li>访问一个不存在的key 对象访问法 返回 undefined, getItem 返回null</li>
+<li>get/set/removeItem/clear/key用对象法是可以被重写的
+如localStorage.getItem = &#39;baz&#39;,且用clear清不掉</li>
+<li>禁用cookie会如何？</li>
+<li>存满的情况会如何？</li>
+<li>key 的个数有没有限制？</li>
+<li>value的长度有没有限制？</li>
+</ul>
+
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><hgroup>
+<h2>简单、优雅、暴力的试验 <a href="./demo/demo1.html" target="_blank">demo</a></h2>
+<pre><code>console.time(&#39;fill&#39;);
+for(var i = 0; ; ++i){
+    try{
+        localStorage.setItem(i, &#39;&#39;);
+    } catch(e){
+        console.log(e);
+        console.log(&#39;共存了&#39; + i +&#39;个key&#39;);
+        break;
+    }
+}
+console.timeEnd(&#39;fill&#39;);
+</code></pre>
+</hgroup><article>
+
+<pre><code>DOMException: Failed to execute &#39;setItem&#39; on &#39;Storage&#39;: Setting the value of &#39;892331&#39; exceeded the quota. {message: &quot;Failed to execute &#39;setItem&#39; on &#39;Storage&#39;: Setting the value of &#39;892331&#39; exceeded the quota.&quot;, name: &quot;QuotaExceededError&quot;, code: 22...
+共存了892331个key
+fill: 35321.370ms
+</code></pre>
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><article>
+<h2>实验结果</h2>
+<ul class="moveIn">
+<li>浏览器禁用cookie，直接localStorage不可访问，不可赋值 typeof检测都报错</li>
+<li>写满后报QuotaExceededError的错误</li>
+<li>chrome隐身模式可以正常使用，关闭时做了一次清空操作</li>
+<li>safari ios5 隐私模式访问报错，ios6报空间不足，ios7类似chrome</li>
+<li>key与value没有限制，只有总容量限制</li>
+<li>存满后单个key不卡(chrome调试器打开会很卡)</li>
+<li>存满后遍历key并按条件删除很卡</li>
+<li>微信下localStorage并不能永久存储</li>
+<li>localStorage有可能存进去全部，读出来半截!</li>
+</ul>
+
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><article>
+<h2>第一版设计,纯前端方案 <a href="http://m.so.com/mhtml/holiday/ls1.html" target="_blank">历史版本</a></h2>
+<ul class="moveIn">
+<li>需要取到代码的字面量<ul class="moveIn">
+<li>静床支持 Access-Control-Allow-Origin 头</li>
+<li>使用ajax，js globalEval, css append dom</li>
+<li>需要改造旧代码，使用包装器</li>
+</ul>
+</li>
+<li>将字面量存入localStorage</li>
+<li>服务端有新版本更新，自动清除本地旧代码</li>
+<li>拿到新代码再次缓存，并保证与之前的key相同，防止写暴用户磁盘</li>
+<li>异常处理<ul class="moveIn">
+<li>用户不支持localStorage</li>
+<li>ajax跨域失败</li>
+<li>本地能读出，但读出半截</li>
+</ul>
+</li>
+</ul>
+
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><article>
+<p>第一版核心代码</p>
+<pre><code>new MSO.Storage({
+    id : moduleName + &#39;.js&#39;,
+    v  : url,
+    getOriginData: function (next) {broadcast
+        MSO.ajaxGet(url, function (result) {
+            next(result);
+        }, function(){
+            MSO.normalGet(url);
+        });
+    }
+}).getData(function (data) {
+    global[&#39;ev&#39; + &#39;al&#39;](data);
+    context.onScriptLoad(moduleName)
+});
+</code></pre><p><img src="img/t014e8d6095268b471d.webp.jpg" alt=""></p>
+
+</article></section></slide>
+<slide class="slide fill" style="background:#fff !important;"><section class="slide-wrapper"><article>
+<p><img src="./img/progress.png" alt="">
+第一版流程图</p>
+
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><article>
+<h2>第一版缺陷</h2>
+<ul class="moveIn">
+<li>颗粒度文件级别</li>
+<li>越combo颗粒度越大</li>
+<li>依赖加载器，增加复杂度</li>
+<li>ajax跨域失败率
+  @屈屈 <img src="./img/ajaxfail.png" alt=""></li>
+<li>debug增加困难</li>
+</ul>
+
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><article>
+<h2>第二版</h2>
+<ul class="moveIn">
+<li>基于燕尾服编译</li>
+<li>编译期离线算出一个页面的静态文件md5，赋值给smarty,</li>
+<li>第一次访问，种入cookie 代码inline,并执行LS.html2ls</li>
+<li>第二次访问，服务器检测cookie是否存在并与服务器上次版本号相同，相同则只输出LS.ls2html</li>
+<li>客户端读ls,并做检测，如果失败删除cookie,刷新页面</li>
+</ul>
+
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><hgroup>
+<h2>核心代码</h2>
+<pre><code>{%lscookie=&#39;result&#39;%}
+&lt;script data-ls=&quot;b_js&quot;&gt;
+    alert(1);
+&lt;/script&gt;
+</code></pre><pre><code>{%if !hasCookie(&#39;stc_nls&#39;)%}
+    {%if !isset($stc_ls_base_flag)%}
+        {%$stc_ls_base_flag=true%}
+        &lt;script src=&quot;ls.js&quot;&gt;&lt;/script&gt;
+    {%/if%}
+    {%if getCookie(&#39;stc_result&#39;) != &quot;6404795474fe&quot;%}
+        &lt;script&gt;LS.setCookie(&quot;stc_result&quot;,&quot;6404795474fe&quot;)&lt;/script&gt;
+    {%/if%}
+{%/if%}
+
+{%if !hasCookie(&#39;stc_nls&#39;) &amp;&amp; getCookie(&#39;stc_result&#39;) == &quot;6404795474fe&quot;%}
+    &lt;script&gt;LS.ls2html(&quot;b_js&quot;,&quot;script&quot;,&quot;stc_result&quot;)&lt;/script&gt;
+{%else%}
+    &lt;script id=&quot;stc_b_js&quot;&gt;alert(1)&lt;/script&gt;
+    &lt;script&gt;LS.html2ls(&quot;b_js&quot;,&quot;stc_b_js&quot;)&lt;/script&gt;
+{%/if%}
+</code></pre><p>ls.js
+<img src="./img/lsjs.png"></p>
+<pre><code>function getLs(key, cookieName) {
+    var value = &#39;&#39;;
+    try {
+        value = localStorage[NAME_SPACE + key] || &#39;&#39;;
+    } catch(e) { }
+    if(value.length &lt; 100) {
+        document.documentElement.style.display = &#39;none&#39;;
+        location.reload(true);
+    }
+    return value;
+}
+
+function setLs(key, value) {
+    try { // 还是有可能存入错误
+        localStorage[NAME_SPACE + key] = value;
+        if(value !== localStorage[NAME_SPACE + key] ) {
+            clearAll();
+        }
+    } catch(e) {
+        clearAll();
+    }
+}
+</code></pre><p> 不支持localstroage: 标记stc_nls=1
+ localstorage失败：删除对应cookie</p>
+<blockquote>
+<p>不支持js的情况： 页面用meta重定向到极速版，并在url中带上noscript=1
+极速版controller如果发现query里含有noscript=1,种上stc_nls=1的cookie</p>
+</blockquote>
+
+</hgroup><article>
+
+
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><article>
+<p><img src="./img/ls2.png" alt="">
+<img src="./img/cookie2.png" alt=""></p>
+
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><article>
+<h2>第二版效果</h2>
+<p><img src="./img/home2.jpg" alt="">
+<img src="./img/result2.jpg" alt=""></p>
+
+</article></section></slide>
+<slide class="slide"><aside class="note">
+<section>
+<p>&#39;MOD_INLINE_TO_LS&#39; =&gt;  true</p>
+
+</section>
+</aside><section class="slide-wrapper"><article>
+<h2>只需在燕尾服开启下面字段</h2>
+<pre><code>&#39;MOD_INLINE_TO_LS&#39; =&gt;  true
+</code></pre>
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><article>
+<h2>优缺点</h2>
+<ul class="moveIn">
+<li>开发简单，只用增加一个data自定义属性，无库依赖，无写法限制</li>
+<li>减少http请求开销</li>
+<li>减少域名个数</li>
+<li>颗粒度大</li>
+<li>不能利用静床分担服务器压力</li>
+<li>强刷问题,导致服务端统计次数增加</li>
+<li>不能跨子域名共享缓存</li>
+</ul>
+
+</article></section></slide>
+<slide class="slide fill" style="background-image:url(img/t01aced6e86a84275de.webp.jpg)"><section class="slide-wrapper"><article>
+<h2>他山之石</h2>
+
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><article>
+<h2>百度</h2>
+<pre><code>//第一次
+try {
+    ! function(window, document) {
+        var localStorage = window.localStorage,
+            setCookie = function f(o, n, t, s) {
+                return e.cookie = o + &quot;=&quot; + encodeURIComponent(n) + &quot;;domain=&quot; + t + &quot;;path=/;expires=&quot; + s.toGMTString() + &quot;;&quot;, f
+            },
+            s = &quot;lssp&quot;,
+            i = &quot;lsv&quot;,
+            l = &quot;4249c97ff2515cb3&quot;,
+            prefix = &quot;search_ls_&quot;;
+        if (localStroage) {
+            [prefix + &quot;js_top&quot;, prefix + &quot;css_top&quot;, prefix + &quot;css_btm&quot;, prefix + &quot;js_frame&quot;, prefix + &quot;js_btm&quot;].forEach(function(o) {
+                el = e.getElementById(o), el &amp;&amp; (localStroage[o] = el.innerHTML)
+            });
+            var t = new Date,
+                now = +a;
+            localStroage[prefix + &quot;css_top&quot;].length &gt; 100 ? (t.setTime(m + 6048e5), setCookie(i, l, e.domain, t)) : (setCookie(i, &quot;&quot;, e.domain, t), t.setTime(now + 6048e5), setCookie(s, &quot;no&quot;, e.domain, t));
+            for (var c in localStorage) 0 == c.indexOf(prefix) &amp;&amp; -1 == c.indexOf(&quot;js_top&quot;) &amp;&amp; -1 == c.indexOf(&quot;css_top&quot;) &amp;&amp; -1 == c.indexOf(&quot;css_btm&quot;) &amp;&amp; -1 == c.indexOf(&quot;js_frame&quot;) &amp;&amp; -1 == c.indexOf(&quot;js_btm&quot;) &amp;&amp; localStorage.removeItem(c)
+        }
+    }(window, document);;
+} catch (err) {}
+
+&lt;style id=&quot;search_ls_css_top&quot;&gt;
+body{...}
+&lt;/style&gt;
+</code></pre><p><img src="./img/baiduls.png" alt=""></p>
+<pre><code>// 第二次
+try {
+    ! function(window, document) {
+        function getId(o) {
+            return document.getElementById(o)
+        }
+        var localStorage = window.localStorage,
+            setCookie = function o(t, e, n, l) {
+                return document.cookie = t + &quot;=&quot; + encodeURIComponent(e) + &quot;;domain=&quot; + n + &quot;;path=/;expires=&quot; + l.toGMTString() + &quot;;&quot;, o
+            },
+            lsSupport = &quot;lssp&quot;,
+            lsControl = &quot;lsv&quot;,
+            lsPrefix = &quot;search_ls_&quot;,
+            LSToHtml = function(o, t) {
+                var e = o,
+                    n = o;
+                &quot;object&quot; == typeof o &amp;&amp; (t = o.data, e = o.tID, n = o.sID);
+                var l = getId(n);
+                if (l) {
+                    var i = localStorage[n] || &quot;&quot;;
+                    if (i.length &gt; 100) try {
+                        &quot;object&quot; != typeof t ? getId(e).textContent = i : getId(e).innerHTML = Bdbox.template(i, t)
+                    } catch (r) {
+                        var a = new Date,
+                            d = +a;
+                        a.setTime(d + 6048e5), setCookie(lsSupport, &quot;no&quot;, document.domain, a), window.location.reload()
+                    } else {
+                        var a = new Date;
+                        setCookie(lsControl, &quot;&quot;, document.domain, a)(lsControl, &quot;&quot;, &quot;.baidu.com&quot;, a)(lsControl, &quot;&quot;, &quot;.m.baidu.com&quot;, a), window.location.reload()
+                    }
+                    return i
+                }
+            };
+        window.LSToHtml = LSToHtml;
+        var lsJsTop = LSToHtml(lsPrefix + &quot;js_top&quot;);
+        &quot;undefined&quot; == window.B &amp;&amp; eval(lsJsTop), window.addEventListener(&quot;load&quot;, setTimeout(function() {
+            var o = new RegExp(&quot;(^| )BAIDUID=([^;]*)(;|$)&quot;).exec(document.cookie),
+                t = /[A-Fa-f0-9]{32}(:FG=1)?/;
+            if (o &amp;&amp; t.test(o[2])) {
+                var e = o[2];
+                localStorage.BAIDUID = e
+            }
+        }, 0), !1)
+    }(window, document);;
+} catch (err) {}
+
+&lt;style id=&quot;search_ls_css_top&quot;&gt;&lt;/style&gt;
+&lt;script&gt;
+LSToHtml(&#39;search_ls_css_top&#39;);
+&lt;/script&gt;
+</code></pre>
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><hgroup>
+<h2>百度首页</h2>
+<pre><code>// 离线生成文件版本
+// 在线combo
+
+http://www.baidu.com/?action=static&amp;ms=1&amp;version=
+css_page_2@8,
+css_plus@4,
+...
+css_widget_sug@1,
+js_zepto@3,
+js_index@2,
+...
+js_setSearchEngine@1&amp;
+callback=B.getCode
+</code></pre><pre><code>{%if $network == &#39;fast&#39; %}
+    {%html rendermode=&quot;combo&quot;%}
+{%else%}
+    {%html rendermode=&quot;inline&quot; localstorage=&quot;true&quot; lscookiepath=&quot;/xxx&quot; %}
+{%/if%}
+{%head%}
+.....
+{%/head%}
+</code></pre>
+</hgroup><article>
+
+<blockquote>
+<p>版本号是36[0-9a-z]进制，如果超过36则从0开始，以保证始终长度为1。cookie过期时间一周
+2G等网络使用inline+localstorage
+3G、wifi使用CDN+combo渲染模式</p>
+</blockquote>
+
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><article>
+<h2>搜狗</h2>
+<pre><code>B.getCode...
+居然不是Gou.getCode...
+</code></pre>
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><article>
+<h2>神马 <a href="http://m.sm.cn/s?q=m.so.com&amp;tomode=advanced" target="_blank">m.sm.cn</a></h2>
+<ul>
+<li>sm.res2ls</li>
+<li>sm.ls2dom<pre><code>ls2dom: function(r, l, c) {
+  if (!t) {
+      var i = e.localStorage.getItem(r),
+          a = {
+              js: &quot;script&quot;,
+              css: &quot;style&quot;
+          };
+      if (i &amp;&amp; i.length &gt; 100) {
+          var s = n.createElement(a[c]),
+              u = i.slice(0, 1),
+              f = i.slice(1);
+          if (u == l) return s.id = r, s.innerHTML = f, void n.head.appendChild(s)
+      }
+      o(function() {
+          e.location.reload()
+      })
+  }
+},
+res2ls: function(n, l) {
+  if (!t)
+      if (r()) {
+          var c = i(n),
+              a = c ? c.innerHTML : &quot;&quot;;
+          try {
+              e.localStorage.setItem(n, l + a)
+          } catch (s) {
+              o()
+          }
+      } else o()
+},
+lsSupport: function() {
+  var n = null,
+      t = &quot;^_^&quot;;
+  return function() {
+      if (null === n) try {
+          e.localStorage.setItem(t, 1),
+          e.localStorage.getItem(t),
+          e.localStorage.removeItem(t),
+          n = 1
+      } catch (o) {
+          n = 0
+      }
+      return n
+  }
+}
+</code></pre></li>
+</ul>
+<pre><code>// 第一次
+&lt;script id=&quot;ls[xYc]&quot;&gt;
+    var Zepto = function() {
+       ...
+    }();
+&lt;/script&gt;
+&lt;script&gt;
+    sm.res2ls(&quot;ls[xYc]&quot;, &quot;1&quot;)
+&lt;/script&gt;
+localStorage中数据：
+&quot;1var Zepto...&quot;
+</code></pre><pre><code>// 第二次
+sm.ls2dom(&quot;ls[xYc]&quot;, &quot;1&quot;, &quot;js&quot;)
+</code></pre><ul>
+<li>如果ls失败，强刷，种上lserr=1的cookie，时间一个小时, 1小时内全走全量</li>
+<li>id是用52进制的生成的，不用手工指定
+*</li>
+</ul>
+
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><article>
+<h2>美团 <a href="http://i.meituan.com/" target="_blank">i.meituan</a></h2>
+<ul class="moveIn">
+<li><p><a href="http://feppt.qiniudn.com/-%E9%AB%98%E6%80%A7%E8%83%BD%E7%A7%BB%E5%8A%A8web%E5%BC%80%E5%8F%91%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88.pdf" target="_blank">truckJS</a></p>
+</li>
+<li><p>基于一套amd装载器</p>
+</li>
+<li>生成文件版本字典</li>
+<li>校验数据完整性</li>
+<li>需要更新的文件合并到一个请求</li>
+<li>ajax请求</li>
+<li>globalEval</li>
+<li>存入localStorage</li>
+<li>truckJS本身不能缓存<pre><code>var requirejsurl = {stc:&#39;/resource/js/require.js&#39;}.stc;
+try {
+  eval (JSON.parse(localStorage[&#39;require.js&#39;]).data);
+} catch (e) {
+  document.write(&#39;&lt;script src=&quot;&#39; + requirejsurl + &#39;&quot;&gt;&lt;/scri&#39; + &#39;pt&gt;&#39;);
+}
+</code></pre><img src="./img/meituan.png" alt=""></li>
+</ul>
+
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><article>
+<h2>腾讯</h2>
+<ul class="moveIn">
+<li><a href="http://mt.tencent.com/#storeinc" target="_blank">MT</a></li>
+<li>颗粒度小，字符串级别</li>
+<li>增量包</li>
+<li>在线跨版本增量包</li>
+</ul>
+
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><article>
+<h2>阿里聚划算</h2>
+<ul class="moveIn">
+<li>修改spdy，删除ssl证书</li>
+<li>服务端传送map.js</li>
+<li>客户端根据map.js以及本地结果确认需要重新获取的文件</li>
+<li>使用websql替代loalStorage</li>
+</ul>
+
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><article>
+<h2>阿里巴巴国际</h2>
+<ul class="moveIn">
+<li>使用WebSocket双工</li>
+</ul>
+
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><article class="flexbox vleft">
+<h1>感谢</h1>
+<ul>
+<li><a href="http://www.welefen.com/" target="_blank">成银</a></li>
+<li><a href="https://www.imququ.com/search.html?s=localStorage" target="_blank">屈屈</a></li>
+<li><a href="http://samy.pl/evercookie/" target="_blank">http://samy.pl/evercookie/</a></li>
+<li><a href="http://www.css88.com/archives/3717" target="_blank">http://www.css88.com/archives/3717</a></li>
+<li><a href="https://github.com/marcuswestin/store.js" target="_blank">https://github.com/marcuswestin/store.js</a></li>
+<li>QQ群 123324404</li>
+</ul>
+
+</article></section></slide>
+        <slide class="slide thank-you-slide segue nobackground">
+            <article class="flexbox vleft auto-fadein">
+                <h2>Q &amp; A</h2>
+                <h3>&lt;Thank You!&gt;</h3>
+            </article>
+        </slide>
+        <slide class="slide logoslide dark nobackground">
+            <article class="flexbox vcenter">
+              <h2 style="color: white;">Powered By nodePPT v0.9.2</h2>
+            </article>
+          </slide>
+        <div class="slideTip" id="tip"></div>
+    </slides>
+</div>
+<canvas id="drawBoard" class="draw-board" width="900" height="700"></canvas>
+<div class="progress"><span id="progress"></span></div>
+<div id="_buttons">
+    <div class="_btn-box" id="_btn-box" style="display:none;">
+        <button class="fa fa-arrow-circle-left" id="_btn-prev"></button>
+        <button class="fa fa-arrow-circle-right" id="_btn-next"></button>
+        <button class="fa fa-paint-brush" id="_btn-brush"></button>
+        <button class="fa fa-compress" id="_btn-overview" data-toggle="fa fa-expand"></button>
+    </div>
+    <button class="fa fa-bars" id="_btn-bar"  data-toggle="fa fa-close"></button>
+</div>
+<script src="./js/mix.0.3.0.min.js"></script>
+<script>
+var base = location.protocol + '//' + location.host;
+
+var path = location.pathname.split('/').filter(function(v){
+    return !!v;
+});
+path.pop();
+path = path.join('/');
+MixJS.config({
+    baseURL: [ base, path, 'js'].join('/')+'/'
+});
+
+
+MixJS.use('event/broadcast', function($){
+    $.loadJS('nodeppt.js',function(){
+        Slide.init({
+            containerID: 'container',
+            drawBoardID: 'drawBoard',
+            slideClass: '.slide',
+            buildClass: '.build',
+            progressID: 'progress',
+            transition: 'slide',
+            width: 1100,
+            dir: './',
+
+            //打开下面的注释就开启postMessage方式
+            //访问网址127.0.0.1:8080/ppt/demo#client
+            control:{
+                type: 'postMessage',
+                args:{
+                    isControl:  false
+                }
+            },
+
+            tipID: 'tip'
+        });
+    }).loadJS('hljs-0.8.js',function(){
+        hljs.tabReplace = '  ';
+        hljs.initHighlightingOnLoad();
+    });
+});
+</script>
+<link rel="stylesheet" href="./css/localStorage.css">
+</body>
+</html>

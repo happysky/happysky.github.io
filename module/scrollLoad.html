@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<title>loading</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, minimal-ui" />
+<meta name="format-detection" content="telephone=no" searchtype="map" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black" />
+<script src="js/lib/zepto.1.1.6.js"></script>
+<style>
+    #list{
+
+    }
+    #list li{
+        height:30px;
+        line-height:30px;
+        border-bottom:#ccc solid 1px;
+    }
+</style>
+</head>
+<body>
+    <div>
+        <ul id="list">
+            
+        </ul>
+    </div>
+</body>
+<script>
+
+(function(){
+    var lastIndex = 0;
+    var app = {
+        init: function(){
+            this.createList();
+            this.bindEvent();
+        },
+        createList: function(){
+            var html = [],
+                curIndex = lastIndex + 20;
+
+            for(var i=lastIndex;i<curIndex;i++){
+                html.push('<li>我是第'+ i +'个</li>');
+            }
+
+            lastIndex = curIndex;
+
+            $('#list').append(html.join(''));
+        },
+        doScroll: function(){
+            this.createList();
+        },
+        bindEvent: function(){
+            var lastTime,
+                me = this,
+                touchDirection = 0, //touch事件的滚动方向，1为向下滚动，-1为向上滚动
+                scrollPoints = [0];
+
+
+            var scrollHandle = function(){
+                var curTime,
+                    direction = 0, //滚动方向，1为向下滚动，2为向上滚动
+                    scrollTop = document.body.scrollTop,
+                    height = $(window).height(),
+                    scrollHeight = document.body.scrollHeight;
+
+                if(!scrollPoints.length){
+                    scrollPoints.push(scrollTop);
+                }else{
+                    scrollPoints = [scrollPoints[scrollPoints.length-1], scrollTop];
+                }
+
+                if(scrollPoints[1]){
+                    if(scrollPoints[1] - scrollPoints[0] > 0){
+                        direction = 1;
+                    }else{
+                        direction = -1;
+                    }
+                }
+
+                //console.log(scrollHeight,scrollTop,height,$(window).height(),$('#CTextDiv').height());
+                var bottom_hei = scrollHeight - (scrollTop + height);
+
+                if((touchDirection == 1 || direction == 1) && bottom_hei < 100){
+                    curTime = (new Date).getTime();
+
+                    //两次滚动触发时间间隔小于100ms 则忽略;
+                    if(lastTime && (curTime - lastTime) < 100){
+                        return false;
+                    }
+
+                    lastTime = curTime;
+
+                    me.doScroll();
+                    //清空touch事件的滚动状态
+                    touchDirection = 0;
+                }
+            }
+
+            //添加滚动
+            $(window).on('scroll', scrollHandle);
+            $(window).on('touchstart', scrollHandle);
+        }
+    };
+
+    app.init();
+})();
+
+
+</script>
+</html>

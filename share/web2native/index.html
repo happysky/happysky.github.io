@@ -1,0 +1,418 @@
+<!doctype html>
+<html lang="en">
+
+	<head>
+		<meta charset="utf-8">
+
+		<title>web call native</title>
+
+		<meta name="description" content="web调起native">
+
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+
+		<link rel="stylesheet" href="css/reveal.css">
+		<link rel="stylesheet" href="css/theme/black.css" id="theme">
+
+		<!-- Code syntax highlighting -->
+		<link rel="stylesheet" href="lib/css/zenburn.css">
+
+		<!-- Printing and PDF exports -->
+		<script>
+			var link = document.createElement( 'link' );
+			link.rel = 'stylesheet';
+			link.type = 'text/css';
+			link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
+			document.getElementsByTagName( 'head' )[0].appendChild( link );
+		</script>
+
+		<!--[if lt IE 9]>
+		<script src="lib/js/html5shiv.js"></script>
+		<![endif]-->
+		<style>
+			.scheme_image{
+
+			}
+			.scheme_image img{
+				position: absolute;
+				left: 0;
+				top: 0;
+				margin:0!important;
+				box-shadow: none!important;
+				border: 0!important;
+				max-width: none;
+				max-height: none;
+			}
+		</style>
+	</head>
+
+	<body>
+
+		<div class="reveal">
+
+			<!-- Any section element inside of this container is displayed as a slide -->
+			<div class="slides">
+				<section>
+					<h1>web call native</h1>
+					<!--h3>webApp 跟 NativeApp 之间的交互</h3-->
+					<p>
+						<small>Created by 武许朋</small>
+					</p>
+				</section>
+
+				<section>
+					<h2>常见的需求</h2>
+					<p class="fragment" data-fragment-index="0">判断是否安装某个APP</p>
+					<p class="fragment" data-fragment-index="1">进入客户端指定页面</p>
+					<p class="fragment" data-fragment-index="2">获取信息</p>
+					<p class="fragment" data-fragment-index="3">跟客户端进行交互（页面在APP内部）</p>
+
+					<aside class="notes">
+						1A、推广下载页面显示 下载、打开 按钮<br/>
+						1B、访问web站点时判断已安装客户端自动调起客户端<br/><br/>
+
+						2A、获取定位信息（浏览器定位（geolocation）慢、不准、需要用户同意）<br/>
+						2B、获取手机imei，可以将APP跟web用户的日志关联起来<br/>
+						2C、获取其他浏览器没有提供的信息<br/>
+					</aside>
+				</section>
+
+				<section>
+					<h2>实现方案</h2>
+					<p class="fragment" data-fragment-index="0">custom scheme url</p>
+					<p class="fragment" data-fragment-index="1">local webserver</p>
+				</section>
+
+
+				<section>
+					<h2>什么是custom scheme url？</h2>
+				</section>
+
+				<section class="scheme_image">
+					<p style="height:142px;"><img src="image/scheme1.png" /></p>
+					<p class="fragment" data-fragment-index="0"><img src="image/scheme2.png" style="top:132px;" /></p>
+					<p class="fragment" data-fragment-index="1"><img src="image/scheme3.png" style="top: 132px;left:407px;" /></p>
+					<p class="fragment" data-fragment-index="2"><img src="image/scheme4.png" style="top: 132px;left:731px;" /></p>
+					<p class="fragment" data-fragment-index="3"><img src="image/scheme5.png" style="top: 132px;" /></p>
+				</section>
+
+				<section>
+					<p>不区分大小写</p>
+					在RFC1738中定义scheme中只能包含字母、数字、+、- ，现实中浏览器没有严格的遵守。
+				</section>
+
+
+				<section>
+					<h2>如何使用？</h2>
+					<p>1、a标签</p>
+					<p>2、location.href="xxx";</p>
+					<p>3、iframe的方式;</p>
+					<aside class="notes">
+						一般都用iframe，因为直接使用a标签 部分浏览器在当前系统不支持该协议的时候会跳转错误页（火狐）<br/>
+						讲完上面这些，大家基本上已经了解了什么是scheme，为什么要用scheme，以及如何使用scheme；<br/>
+						下面讲下scheme的缺点，及浏览器的支持情况
+					</aside>
+				</section>
+
+
+				<section>
+					<h2>custom scheme url 缺点</h2>
+					<p class="fragment" data-fragment-index="0">冲突不可检测</p>
+					<p class="fragment" data-fragment-index="1">部分浏览器会弹出对话框，需要用户确认</p>
+					<p class="fragment" data-fragment-index="2">无返回值，不确定调用是否成功</p>
+					<aside class="notes">
+						冲突后不会覆盖、不会无法使用，会弹出选择框<br/>
+						没有返回值这个可以通过一些方法检测是否调用成功，但是不可能拿到返回值<br/>
+						弹框这个目前没有啥解决方案
+					</aside>
+				</section>
+
+
+				<section>
+					<p><img src="image/tips1.png" height="639px" /></p>
+				</section>
+
+
+				<section>
+					<h2>浏览器支持情况及弹框</h2>
+					<p class="fragment" data-fragment-index="0">
+						支持-不提示：<br/>
+						<code class="hljs">360、chrome、firefox、小米自带浏览器、酷派自带浏览器</code>
+					</p>
+					<p class="fragment" data-fragment-index="1">
+						支持-弹框提示：<br/>
+						<code class="hljs">UC、QQ</code>
+					</p>
+					<p class="fragment" data-fragment-index="2">
+						不支持<br/>
+						<code class="hljs">微信、百度</code>
+					</p>
+					<aside class="notes">
+						关于提示UC、QQ还有个区别，QQ会先判断确认有应用能处理才弹框，UC不管支不支持都弹框<br/>
+
+						微信、百度浏览器是使用白名单的方式，如百度地图的以下scheme就支持：<br/>
+						baidumap://map/gopage?page=offlinemap&src=webapp.default.indexnearbypg.indexrecom<br/>
+
+						大部分浏览器不支持或无效时点击无反应，个别浏览器无效时会返回错误页
+					</aside>
+				</section>
+
+				<section>
+					<p><img src="image/tips.png" /></p>
+				</section>
+
+
+				<section>
+					<h2>关于无返回值，不确定调用是否成功的问题</h2>
+					<aside class="notes">
+						正常情况下只要调用成功了，肯定会打开对应的APP，这时候浏览器就隐藏了
+					</aside>
+				</section>
+
+
+				<section>
+					<h2>检测是否调用成功</h2>
+					<p class="fragment" data-fragment-index="0">
+						可以通过判断浏览器是否隐藏来判断
+						<code class="hljs" style="text-align:left;display:inline-block;padding:10px;">
+							document.hidden<br/>
+							document.webkitHidden<br/>
+							document.msHidden<br/>
+							document.mozHidden<br/>
+						</code>
+					</p>
+				</section>
+
+				<section>
+					<p class="fragment" data-fragment-index="0">
+						document.hidden：<br/>
+						<code class="hljs">qq、360、chrome、firefox、ie</code>
+					</p>
+					<p class="fragment" data-fragment-index="1">
+						document.webkitHidden：<br/>
+						<code class="hljs">UC、qq、360、、chrome</code>
+					</p>
+					<p class="fragment" data-fragment-index="2">
+						document.mozHidden<br/>
+						<code class="hljs">firefox</code>
+					</p>
+					<p class="fragment" data-fragment-index="2">
+						document.msHidden<br/>
+						<code class="hljs">IE</code>
+					</p>
+				</section>
+
+
+				<section>
+					<h2>是否可以使用<br/><br/>setTimeout、<br/>setInterval<br/><br/>检测？</h2>
+				</section>
+
+
+				<section>
+					<p>
+						<b>会停止执行：</b><br/><br/>
+						<code class="hljs">qq、百度、小米自带浏览器、酷派自带浏览器</code>
+					</p>
+					<p><br/></p>
+
+					<p>
+						不会停止执行：<br/><br/>
+						<code class="hljs">360、uc、chrome、微信</code>
+					</p>
+					<p><br/></p>
+
+					<p>
+						setTimeout 执行6次，setInterval执行2次：<br/><br/>
+						<code class="hljs">firefox</code>
+					</p>
+				</section>
+
+
+				<section>
+					<h2>弹出对话框的时候是否会阻塞浏览器的执行？</h2>
+				</section>
+
+
+				<section>
+					<p>1、是否执行对话框</p>
+					<p>2、多个程序选择对话框</p>
+				</section>
+
+				<section>
+					<h2>不会</h2>
+				</section>
+
+
+				<section>
+					<pre>
+						<code data-trim contenteditable>
+for(var i=0,l=tag_a.length;l--;i++){
+    tag_a[i].addEventListener('click', function(e){
+        var href = this.getAttribute('href'),
+            applink = this.getAttribute('data-applink'),
+            timeout = 2000,
+            delay_time = 10,
+            click_time = (new Date).getTime();
+
+        if(!applink){
+            return false;
+        }
+
+        app.openWithIframe(applink);
+
+        timer1 = setInterval(function(){
+
+            if(document.hidden || document.webkitHidden || document.msHidden || document.mozHidden){
+                
+                clearInterval(timer1);
+                clearTimeout(timer2);
+            }
+
+        },1);
+
+        timer2 = setTimeout(function(){
+            clearInterval(timer1);
+
+            if(document.hidden || document.webkitHidden || document.msHidden || document.mozHidden || now - click_time - delay_time > timeout){
+                return false;
+            }
+            location.href = href;
+        },timeout);
+
+        e.preventDefault();
+    }, false);
+}
+						</code>
+					</pre>
+
+					<aside class="notes">
+						这里有个坑，把这两项写一个 filter 中会导致不会在桌面创建入口
+					</aside>
+				</section>
+
+
+
+
+
+
+				<section>
+					<h2>scheme 可以定义多个(ios没有确认)</h2>
+				</section>
+
+
+				<section>
+					<p>Android规定 支持http、https，但国内浏览器都不支持，估计应该是不想将流量倒给其他应用</p>
+				</section>
+
+				<section>
+					<p><img src="image/tips2.png" style="height: 700px;" /></p>
+					<aside class="notes">
+						只有检测出有除了浏览器外的其他APP支持该协议时，才会弹出选择框
+					</aside>
+				</section>
+
+
+				<!-- Example of nested vertical slides -->
+				<section>
+					<h2>AndroidManifast.xml</h2>
+					<pre>
+						<code data-trim contenteditable>
+<activity
+android:name=".Main"
+android:label="@string/app_name"
+android:theme="@style/AppTheme.NoActionBar">
+	<intent-filter>
+		<action android:name="android.intent.action.MAIN" />
+		<category android:name="android.intent.category.LAUNCHER" />
+	</intent-filter>
+
+	<intent-filter>
+		<category android:name="android.intent.category.DEFAULT"/>
+		<action android:name="android.intent.action.VIEW"/>
+		<category android:name="android.intent.category.BROWSABLE"/>
+		<data android:scheme="wxp" android:host="test.com"/>
+	</intent-filter>
+</activity>
+						</code>
+					</pre>
+
+					<aside class="notes">
+						这里有个坑，把这两项写一个 filter 中会导致不会在桌面创建入口
+					</aside>
+				</section>
+
+				<section>
+					<p>android.intent.action.MAIN：应用程序入口</p>
+					<p>android.intent.category.LAUNCHER：Activity显示顶级程序列表中</p>
+					<p>android.intent.category.DEFAULT：默认的Category</p>
+					<p>android.intent.action.VIEW：显示指定数据</p>
+					<p>android.intent.category.BROWSABLE：指定该Activity能被浏览器安全调用</p>
+				</section>
+
+
+				<section>
+					<h2>如何得到已知应用的Scheme？</h2>
+					<p><a href="https://www.zhihu.com/question/19907735" target="_blank">在网上搜索</a></p>
+					<p>查看对应应用的wap站是否有相关接口调用</p>
+					<aside class="notes">
+						是否可以通过APK安装包查看？
+					</aside>
+				</section>
+
+
+				<section>
+					<h2>如何查看已知应用的 scheme</h2>
+					<p>1、下载APK安装包</p>
+					<p>2、解压</p>
+					<p>3、反编译</p>
+					<p>java -jar AXMLPrinter2.jar a.xml > b.xml</p>
+					<p>相关工具：apktool、AXMLPrinter2.jar</p>
+				</section>
+
+
+				<section>
+					<h2>什么是local webserver？</h2>
+				</section>
+
+
+				<section>
+					<h2>Thanks!</h2>
+					<p>Q&A</p>
+				</section>
+
+			</div>
+
+		</div>
+
+		<script src="lib/js/head.min.js"></script>
+		<script src="js/reveal.js"></script>
+
+		<script>
+
+			// Full list of configuration options available at:
+			// https://github.com/hakimel/reveal.js#configuration
+			Reveal.initialize({
+				controls: true,
+				progress: true,
+				history: true,
+				center: true,
+
+				transition: 'slide', // none/fade/slide/convex/concave/zoom
+
+				// Optional reveal.js plugins
+				dependencies: [
+					{ src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
+					{ src: 'plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/highlight/highlight.js', async: true, condition: function() { return !!document.querySelector( 'pre code' ); }, callback: function() { hljs.initHighlightingOnLoad(); } },
+					{ src: 'plugin/zoom-js/zoom.js', async: true },
+					{ src: 'plugin/notes/notes.js', async: true }
+				]
+			});
+
+		</script>
+
+	</body>
+</html>

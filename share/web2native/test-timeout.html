@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<title>小米自带浏览器</title>
+<meta name=viewport content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, minimal-ui">
+<style>
+a{
+	width: 100%;
+	display: block;
+	margin:100px auto;
+	text-align: center;
+	font-size:18px;
+	font-family: 微软雅黑;
+}
+</style>
+</head>
+<body>
+    <div id="message" style="position:absolute;"></div>
+    <div><span id="now"></span></div>
+    <div><span id="timeout"></span></div>
+    <div><span id="interval"></span></div>
+    <div><span id="intervalCount"></span></div>
+    <div id="hidden"></div>   
+    <a href="http://m.so.com">http://m.so.com/</a>
+    <a href="http://m.so.com" data-applink="wxp://test.com/?a=b&c=d">wxp://test.com/</a>
+    <a href="http://m.so.com" data-applink="http://test.com/?a=b&c=d">http://test.com/</a>
+    <a href="http://m.so.com" data-applink="xxxx://test.com/?a=b&c=d">xxxx://test.com/</a>
+</body>
+<script>
+
+    var app = {
+        count : 0,
+        count1: 0,
+        init: function(){
+            //window.location.href = "http://www.so.com";
+            //window.location.href = "ddd://www.so.com";
+            this.initApplink();
+            //this.checkTimeout();
+            //this.checkHidden();
+            //this.openWithIframe('http://www.so.com');
+        },
+        message: function(message){
+            var div = document.querySelector('#message');
+
+            div.innerHTML += message + '<hr />';
+        },
+        initApplink: function(){
+            var tag_a = document.querySelectorAll('a'),
+                timer1,
+                timer2;
+            for(var i=0,l=tag_a.length;i<l;i++){
+                tag_a[i].addEventListener('click', function(e){
+                    var href = this.getAttribute('href'),
+                        applink = this.getAttribute('data-applink'),
+                        timeout = 5000;
+
+                    if(!applink){
+                        return false;
+                    }
+
+                    app.openWithIframe(applink);
+
+                    setTimeout(function(){
+                        if(document.hidden || document.webkitHidden || document.msHidden || document.mozHidden){
+                            return false;
+                        }
+                        location.href = href;
+                    },timeout);
+
+                    e.preventDefault();
+                }, false);
+
+                // tag_a[i].addEventListener('focus', function(){
+                //     app.message('focus');
+                // });
+
+                // tag_a[i].addEventListener('blur', function(){
+                //     app.message('blur');
+                // });
+            }
+        },
+        openWithIframe: (function(){
+            var iframe = document.createElement('iframe');
+            iframe.width="0";
+            iframe.height="0";
+            iframe.style.border="0";
+            iframe.style.display="none";
+            document.body.appendChild(iframe);
+
+            return function(url){
+                iframe.setAttribute('src', url);
+            };
+        })(),
+        checkTimeout: function(){
+            var t,now, timeout, interval,intervalCount;
+            now = document.querySelector('#now');
+            timeout = document.querySelector('#timeout');
+            interval = document.querySelector('#interval');
+            intervalCount = document.querySelector('#intervalCount');
+            t = new Date;
+
+            now.innerHTML = t;
+            timeout.innerHTML = t;
+            interval.innerHTML = t;
+            intervalCount.innerHTML = 0;
+
+            setTimeout(function(){
+                //alert(1);
+                timeout.innerHTML = new Date;
+            },5000);
+
+            setInterval(function(){
+                //alert(2);
+                //interval.innerHTML = new Date;
+                interval.innerHTML += '<br/>' + new Date;
+                app.count1 ++;
+                intervalCount.innerHTML = app.count1;
+                //intervalCount.innerHTML = intervalCount.innerHTML*1 + 1;
+            },10000);
+        },
+        checkHidden: function(){
+            var hidden_dom = document.querySelector('#hidden'),
+                html = [],
+                callback = arguments.callee;
+
+            setTimeout(function(){
+                html.push('document.hidden:' + document.hidden);
+                html.push('document.webkitHidden:' + document.webkitHidden);
+                html.push('document.mozHidden:' + document.mozHidden);
+                html.push('document.msHidden:' + document.msHidden);
+                html.push('-------------------<br/>');
+
+                hidden_dom.innerHTML += html.join('<br/>');
+                if(app.count < 10){
+                    callback();
+                    app.count++ ;
+                }
+                
+            },1000);
+        },
+
+    };
+
+    app.init();
+    
+</script>
+</html>

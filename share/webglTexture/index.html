@@ -1,0 +1,649 @@
+<!doctype html>
+<html lang="en">
+
+	<head>
+		<meta charset="utf-8">
+
+		<title>webgl-texture</title>
+
+		<meta name="description" content="web调起native">
+
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+
+		<link rel="stylesheet" href="css/reveal.css">
+		<link rel="stylesheet" href="css/theme/black.css" id="theme">
+
+		<!-- Code syntax highlighting -->
+		<link rel="stylesheet" href="lib/css/zenburn.css">
+
+		<!-- Printing and PDF exports -->
+		<script>
+			var link = document.createElement( 'link' );
+			link.rel = 'stylesheet';
+			link.type = 'text/css';
+			link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
+			document.getElementsByTagName( 'head' )[0].appendChild( link );
+		</script>
+
+		<!--[if lt IE 9]>
+		<script src="lib/js/html5shiv.js"></script>
+		<![endif]-->
+		<style>
+			.scheme_image{
+
+			}
+			.scheme_image img{
+				position: absolute;
+				left: 0;
+				top: 0;
+				margin:0!important;
+				box-shadow: none!important;
+				border: 0!important;
+				max-width: none;
+				max-height: none;
+			}
+		</style>
+	</head>
+
+	<body>
+
+		<div class="reveal">
+
+			<!-- Any section element inside of this container is displayed as a slide -->
+			<div class="slides">
+				<section>
+					<h1>webgl - 颜色与纹理</h1>
+					<!--h3>webApp 跟 NativeApp 之间的交互</h3-->
+				</section>
+
+
+				<section>
+					<h2>将非坐标数据传入顶点着色器</h2>
+					<code class="hljs" style="text-align:left;display:inline-block;padding:10px;">
+						attribute vec4 a_Position;<br/>
+						attribute float a_PointSize;<br/>
+						void main() {<br/>
+						&nbsp;gl_Position = a_Position;<br/>
+						&nbsp;gl_PointSize = a_PointSize;<br/>
+						}<br/>
+					</code>
+
+					<aside class="notes">
+						1、与传递顶点坐标方法相同<br/>
+						2、可分为单点和缓冲区<br/>
+						3、createBuffer、bindBuffer、bufferData、vertexAttribPointer、enableVertexAttribArray
+					</aside>
+				</section>
+
+
+				<section>
+					<h2>单点</h2>
+					<code class="hljs" style="text-align:left;display:inline-block;padding:10px;">
+						let a_Position = gl.getAttribLocation(gl.program, 'a_Position');<br/><br/>
+						gl.vertexAttrib3f(a_PointSize, 1.0, 2.0, 3.0);<br/>
+					</code>
+					<aside class="notes">
+						1、vertexAttrib[1234]f[v]
+					</aside>
+				</section>
+
+				<section>
+					<h2>缓冲区</h2>
+					<code class="hljs" style="text-align:left;display:inline-block;padding:10px;">
+						let vertices = new Float32Array([<br/>
+				        &nbsp;0.0, 0.5,   -0.5, -0.5,   0.5, -0.5<br/>
+				        ]);<br/>
+						let vertexBuffer = gl.createBuffer();<br/>
+						gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);<br/>
+						gl.bufferData(gl.ARRAY_BUFFER, vertices, gl.STATIC_DRAW);<br/>
+						let a_Position = gl.getAttribLocation(gl.program, 'a_Position');<br/>
+						gl.vertexAttribPointer(a_Position, 2, gl.FLOAT, false, 0, 0);<br/>
+						gl.enableVertexAttribArray(a_Position);<br/>
+					</code>
+					<aside class="notes">
+						1、看demo1
+					</aside>
+				</section>
+
+
+				<section>
+					<h2>一个缓冲区给多个变量提供数据</h2>
+					<p>vertexAttribPointer</p>
+
+					<aside class="notes">
+						1、有大量数据的时候维护多个数组的对应关系，会比较麻烦<br/>
+						2、draw调用拥有多个顶点缓冲区会导致效率降低
+					</aside>
+				</section>
+
+
+				<section>
+					<p><img src="image/vertexAttribPointer.png" /></p>
+
+					<aside class="notes">
+					</aside>
+				</section>
+
+
+				<section>
+					<code class="hljs" style="text-align:left;display:inline-block;padding:10px;">
+						let verticesSizes = new Float32Array([<br/>
+				        &nbsp;0.0,  0.5,  10.0,  // the 1st point<br/>
+				        &nbsp;-0.5, -0.5,  20.0,  // the 2nd point<br/>
+				        &nbsp;0.5, -0.5,  30.0   // the 3rd point<br/>
+				        ]);<br/>
+					</code>
+					<p><img src="image/vertexAttribPointer1.png" /></p>
+
+					<aside class="notes">
+					</aside>
+				</section>
+
+
+				<section>
+					<code class="hljs" style="text-align:left;display:inline-block;padding:10px;">
+						let FSIZE = verticesSizes.BYTES_PER_ELEMENT;<br/><br/>
+						gl.vertexAttribPointer(a_Position, 2, gl.FLOAT, false, FSIZE * 3, 0);<br/><br/>
+				        gl.vertexAttribPointer(a_PointSize, 1, gl.FLOAT, false, FSIZE * 3, FSIZE * 2)<br/><br/>
+				        ]);<br/>
+					</code>
+
+					<aside class="notes">
+					</aside>
+				</section>
+
+
+				<section>
+					<h2>BYTES_PER_ELEMENT</h2>
+					<p class="fragment" data-fragment-index="0">长度跟声明的数据类型有关系</p>
+
+					<aside class="notes">
+						1、长度跟声明的数据类型有关系
+					</aside>
+				</section>
+
+				<section>
+					<p>Int8Array;         // 1</p>
+					<p>Uint8Array;        // 1</p>
+					<p>Uint8ClampedArray; // 1</p>
+					<p>Int16Array;        // 2</p>
+					<p>Uint16Array;       // 2</p>
+					<p>Int32Array;        // 4</p>
+					<p>Uint32Array;       // 4</p>
+					<p>Float32Array;      // 4</p>
+					<p>Float64Array;      // 8</p>
+
+					<aside class="notes">
+						1、看demo2
+					</aside>
+				</section>
+
+
+				<section>
+					<h2>shader变量类型</h2>
+					<p class="fragment" data-fragment-index="0">只有三种类型</p>
+					<p class="fragment" data-fragment-index="1">attribute</p>
+					<p class="fragment" data-fragment-index="2">uniform</p>
+					<p class="fragment" data-fragment-index="3">varying</p>
+					<aside class="notes">
+						1、这个主要是为下面需要讲解如何绘制彩色三角形做准备<br/>
+						2、缓冲区只有attribute类型么，有uniform类型的缓冲区吗？
+					</aside>
+				</section>
+
+				<section>
+					<h2>attribute</h2>
+					<ul>
+						<li>只能在vertexshader中声明、使用，不能在fragment shader中声明、使用</li>
+						<li>数据将从着色器外部传递给变量</li>
+						<li>数据类型只能为：float，vec2，vec3，vec4，mat2，mat3，mat4</li>
+						<li>一般用来声明一些顶点信息</li>
+						<li>顶点坐标、顶点大小、顶点颜色、纹理坐标、法线</li>
+						<li>使用getAttribLocation获取位置</li>
+						<li>使用vertexAttribPointer、vertexAttrib[1234]f[v]赋值</li>
+					</ul>
+				</section>
+
+				<section>
+					<h2>uniform</h2>
+					<ul>
+						<li>能在vertex、fragment 声明、使用，常量、不可被修改</li>
+						<li>一般用来声明一些片源信息</li>
+						<li>变换矩阵、材质、光照参数、颜色</li>
+						<li>使用getUniformLocation获取位置</li>
+						<li>使用uniform[1234][fi][v]赋值</li>
+					</ul>
+				</section>
+
+
+				<section>
+					<h2>varying</h2>
+					<ul>
+						<li>是vertex和fragment shader之间做数据传递用的，一般vertex shader修改varying变量的值，然后fragment shader使用该varying变量的值</li>
+						<li>varying变量在vertex和fragment shader二者之间的声明必须是一致的</li>
+						<li>数据类型只能为：float，vec2，vec3，vec4，mat2，mat3，mat4</li>
+						<li>JS无法直接给varying变量赋值，需要借助attribute变量接受外部值，再在顶点着色器内部给varying变量赋值</li>
+					</ul>
+
+					<aside class="notes">
+						1、看demo4
+					</aside>
+				</section>
+
+
+				<section>
+					<h2>顶点着色器和片元着色器之间的数据传输</h2>
+					<p><img src="image/varying-pipeline.png" /></p>
+					<aside class="notes">
+						1、geometry shader(几何着色器)<br/>
+						2、rasterizer 光栅化
+					</aside>
+				</section>				
+
+				<section>
+					<p><img src="image/varying-pipeline2.png" /></p>
+				</section>
+
+				<section>
+					<p><img src="image/varying-pipeline1.png" /></p>
+					<aside class="notes">
+						绘制图形的步骤<br/>
+						1、读取顶点信息<br/>
+						2、图形装配<br/>
+						3、光栅化<br/>
+						4、执行片元着色器<br/>
+					</aside>
+				</section>
+
+
+				<section>
+					<h2>读取顶点信息</h2>
+					<p>执行顶点着色器，读取1个顶点的相关数据</p>
+					<aside class="notes">
+
+					</aside>
+				</section>
+
+
+				<section>
+					<h2>图形装配</h2>
+					<p>将孤立的顶点坐标装配成几何图形，图形的类别由gl.drawArrays的第一个参数决定，比如gl.POINTS, gl.TRIANGLES</p>
+					<aside class="notes">
+
+					</aside>
+				</section>
+
+
+				<section>
+					<h2>光栅化</h2>
+					<p>将装配好的几何图形转化为片元，将矢量的几何图形转变为栅格化的片元（像素）</p>
+					<aside class="notes">
+
+					</aside>
+				</section>
+
+
+				<section>
+					<h2>执行片元着色器</h2>
+					<p>对各个片元着色</p>
+					<aside class="notes">
+
+					</aside>
+				</section>
+
+				<section>
+					<h2>内插</h2>
+					<ul>
+						<li>插值，缺少数据才需要插值，比如想要把一系列散点连成平滑曲线，相邻已知点之间缺少很多点，此时就需要通过内插填补缺少的数据，最终平滑曲线上除已知点之外的所有点都是插值得到的</li>
+						<li>例如Photoshop的自定义渐变，我们只需要设置几个点的颜色就能自动生成一整条渐变带，这几个点之间的颜色都是通过内置插值算法得到的</li>
+						<li>varying变量的值传递到片元着色器之前进行的插值过程被称为内插，同样，我们也可以利用内插生成渐变</li>
+					</ul>
+					<aside class="notes">
+						
+					</aside>
+				</section>
+
+
+				<section>
+					<ul>
+						<li>顶点着色器是逐顶点执行的</li>
+						<li>片元着色器是逐片(一个像素一个像素绘制的)元执行的</li>
+						<li>就像一个双重循环，外层遍历顶点，内层遍历片元</li>
+					</ul>
+
+					<aside class="notes">
+						1、看demo5<br/>
+						2、gl_FragCoord的00点为canvas的左下角
+						
+					</aside>
+				</section>
+
+
+
+				<section>
+					<p><img src="image/webgl-vertex-shader-execution.png" /></p>
+				</section>
+
+
+				<section>
+					<p><img src="image/webgl-varying.png" /></p>
+				</section>
+
+
+				<section>
+					<p><img src="image/wall.png" /></p>
+					<aside class="notes">
+						1、今天继续讲第五章第二部分：纹理<br/>
+						2、看 demo6<br/>
+						3、这个效果用上一节将的绘制颜色也是可以实现的，不过会很麻烦
+					</aside>
+				</section>
+
+
+
+				<section>
+					<h2>将纹理图贴在几何图形上的步骤</h2>
+					<ul>
+						<li>准备好映射到几何图形上的文理图像</li>
+						<li>为几何图形配置纹理映射方试</li>
+						<li>加载文理图像，对其进行一些配置，在WebGL中使用它。</li>
+						<li>在片元着色器中将相应的纹素从纹理中抽取出来，并将纹素的颜色赋给片元。</li>
+					</ul>
+
+					<aside class="notes">
+						1、对图片格式没有要求，png、jpg、gif、bmp都支持<br/>
+						2、图片不能跨域，如果必须要跨域需要在服务器添加Access-Control-Allow-Origin 头，并且在代码中添加，image.crossOrigin = "anonymous"<br/>
+						3、对图片的尺寸有要求，在多数情况下，纹理的宽和高都必须是2的幂（如：1，2，4，8，16等等）<br/>
+						4、非2的幂纹理不是不能使用，是部分功能不能用，如：不能用来生成多级渐进纹理，而且不能使用纹理重复<br/>
+						5、看 demo6 修改 image为 wall1；TEXTURE_WRAP_S、T 修改为 CLAMP_TO_EDGE<br/>
+					</aside>
+				</section>
+
+				<section>
+					<h2>2的幂数?</h2>
+					<ul>
+						<li>2的幂数是为了迎合一项技术：mipmap（为了加快渲染速度和减少图像锯齿，贴图被处理成由一系列被预先计算和优化过的图片组成的文件）</li>
+						<li>需要在WebGL读取纹理之前，开启mipmap处理</li>
+						<li>gl.generateMipmap(gl.TEXTURE_2D)</li>
+						<li>调用后会先把图片按2的倍数逐渐缩小7张图片，并且缓存起来</li>
+					</ul>
+				</section>
+
+				<section>
+					<p><img src="image/mipmap.png" style="top: -50px;background: #fff;position: relative;" /></p>
+
+					<aside class="notes">
+						1、这是调用mipmap后生成的图片缓存
+					</aside>
+				</section>
+
+
+				<section>
+					<h2>mipmap</h2>
+					<ul>
+						<li>缺点：会占用内存，因为mipmap会根据摄像机远近不同而生成对应的七个贴图，所以必然占内存！</li>
+						<li>优点：加快渲染速度和减少图像锯齿</li>
+						<li>mipmap这个名称来源:mip实际上是三个拉丁词的首字母：multum in parvo，翻译成英文就是：much in little，其意思也就是说可以在一个纹理对象中生成很多不同尺寸的纹理。</li>
+					</ul>
+				</section>
+
+
+
+
+				<section>
+					<p><img src="image/mipmap1.png" style="top: -50px;background: #fff;position: relative;" /></p>
+
+					<aside class="notes">
+						1、这两张图一个是使用了mipmap，一个没有使用mipmap<br/>
+						2、看 demo6.1<br/>
+						3、看 demo10
+						4、看 demo http://wxp.com/product/git/webgl/webGL/chapter7/ex7-2.html
+					</aside>
+				</section>
+
+
+
+				<section>
+					<h2>纹理坐标</h2>
+					<ul>
+						<li>st坐标、也有叫uv坐标</li>
+						<li>纹理坐标是一种新坐标系，与canvas和WebGL坐标系都不一样，原点在canvas左下角，s轴向右为正，t轴向上为正，canvas右上角坐标为(1.0, 1.0)</li>
+					</ul>
+
+					<aside class="notes">
+						1、刚才我们在开始的时候说了贴图的4个步骤<br/>
+						2、第二步是为几何图形配置纹理映射方试<br/>
+						3、图片要映射到图形上，就要有坐标对应关系
+					</aside>
+				</section>
+
+				<section>
+					<p><img src="image/coord.png" style="top: -50px;background: #fff;position: relative;" /></p>
+
+					<aside class="notes">
+						1、纹理的坐标是相对于图片的，00永远是图片的左下角，11永远是图片的右上角，跟图片的大小没关系
+					</aside>
+				</section>
+
+
+
+				<section>
+					<p><img src="image/texture-coord-3.png" style="background: #fff;position: relative;" /></p>
+
+					<aside class="notes">
+						1、这是在纹理坐标下显示的图片<br/>
+						2、由于纹理坐标的原点在左下角，所以在纹理坐标下图片是倒立的，Y轴是反的
+					</aside>
+				</section>
+
+
+				<section>
+					<p><img src="image/texture-coord-1.png" style="top: -150px;background: #fff;position: relative;" /></p>
+
+					<aside class="notes">
+						1、纹理坐标与webgl坐标的映射正常情况下是左下对左下，右上对右上<br/>
+						2、看 demo6 修改 image_sky为 tiger，坐标为左下对左下<br/>
+					</aside>
+				</section>
+
+
+				<section>
+					<h2>gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true)</h2>
+
+					<aside class="notes">
+						1、该方法可以将纹理沿Y轴翻转<br/>
+						2、或者可以说是调整图片的左下角与原点重合<br/>
+						3、另一种方法：改变坐标映射方式
+					</aside>
+				</section>
+
+
+				<section>
+					<p><img src="image/texture-coord-2.png" style="top: -150px;background: #fff;position: relative;" /></p>
+
+					<aside class="notes">
+						1、还可以用其他各种对应关系<br/>
+						2、看demo6
+					</aside>
+				</section>
+
+
+				<section>
+					<p><img src="image/texture-coord-4.png" style="top: -150px;background: #fff;position: relative;" /></p>
+
+					<aside class="notes">
+						1、前面两个图都是完全贴图，纹理图跟几何图形一样大<br/>
+						2、这个是如果纹理图不够大时，如何贴图
+					</aside>
+				</section>
+
+
+
+				<section>
+					<h2>图片的显示设置</h2>
+					<ul>
+						<li>gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);</li>
+						<li>第一个参数是固定的</li>
+						<li>第二个参数有TEXTURE_MAG_FILTER、TEXTURE_MIN_FILTER、TEXTURE_WRAP_S、TEXTURE_WRAP_T</li>
+					</ul>
+
+					<aside class="notes">
+						1、图片跟几何图形一般都是无法完全匹配的，所以需要设置下无法完全匹配的时候图片如何显示，这个函数就是用来设置图片的显示的<br/>
+						2、TEXTURE_MAG_FILTER、TEXTURE_MIN_FILTER是一组的，用来设定缩放过程中，如何取颜色<br/>
+						3、TEXTURE_WRAP_S、TEXTURE_WRAP_T是一组的，用来设定图片平铺的
+					</aside>
+				</section>
+
+
+				<section>
+					<h2>TEXTURE_MAG_FILTER</h2>
+					<ul>
+						<li>纹理放大筛选器</li>
+						<li>取值：gl.LINEAR(default value)、gl.NEAREST</li>
+					</ul>
+
+					<aside class="notes">
+						1、gl.LINEAR(default value) 线性取色<br/>
+						2、gl.NEAREST 就近取色<br/>
+						3、gl.NEAREST返回最接近纹理坐标的纹素<br/>
+						3、gl.LINEAR返回以样本点为中心四个方向上像素的平均值。这会形成一个逐渐过渡的颜色，这效果通常也是更理想的。但是这也意味着显卡需要消耗四倍的工作量来完成二个工作，所以它比NEAREST要慢，幸运的是，现在显卡速度很快，我们几乎察觉不到<br/>
+					</aside>
+				</section>
+
+
+				<section>
+					<h2>TEXTURE_MIN_FILTER</h2>
+					<ul>
+						<li>纹理缩小筛选器</li>
+						<li>取值：gl.LINEAR、gl.NEAREST、gl.NEAREST_MIPMAP_NEAREST、gl.LINEAR_MIPMAP_NEAREST、gl.NEAREST_MIPMAP_LINEAR(default value)、gl.LINEAR_MIPMAP_LINEAR</li>
+					</ul>
+
+					<aside class="notes">
+						1、gl.LINEAR 线性取色<br/>
+						2、gl.NEAREST 就近取色<br/>
+						2、gl.NEAREST_MIPMAP_NEAREST<br/>
+						2、gl.LINEAR_MIPMAP_NEAREST<br/>
+						2、gl.NEAREST_MIPMAP_LINEAR(default value)<br/>
+						2、gl.LINEAR_MIPMAP_LINEAR<br/>
+					</aside>
+				</section>
+
+
+
+				<section>
+					<ul>
+						<li>NEAREST_MIPMAP_NEAREST</li>
+						<li>这种过滤方式会选取最接近屏幕上纹理的mipmap，并且使用NEAREST来实现。</li>
+						<li>LINEAR__MIPMAP_NEAREST</li>
+						<li>这种过滤方式会选取最接近屏幕上纹理的mipmap，并且使用LINEAR来实现。</li>
+						<li>NEAREST_MIPMAP_LINEAR</li>
+						<li>这种过滤方式会选取两个最接近的mipmap，并且使用NEAREST来实现，最后的颜色会是两种样本的平均值。</li>
+						<li>LINEAR_MIPMAP_LINEAR</li>
+						<li>这种过滤方式会选取两个最接近的mipmap，并且使用LINEAR来实现，最后的颜色会是两种样本的平均值。这也叫做三线性过滤(trilinear filtering)。</li>
+					</ul>
+				</section>
+
+
+				<section>
+					<h2>TEXTURE_WRAP_S</h2>
+					<ul>
+						<li>S轴重复方式</li>
+						<li>取值：gl.REPEAT (default value)、gl.CLAMP_TO_EDGE、gl.MIRRORED_REPEAT</li>
+					</ul>
+
+					<aside class="notes">
+						1、gl.REPEAT (default value)(重复)<br/>
+						2、gl.CLAMP_TO_EDGE (使用纹理图像的边缘值)<br/>
+						3、gl.MIRRORED_REPEAT (镜像对称式)<br/>
+					</aside>
+				</section>
+
+
+				<section>
+					<h2>TEXTURE_WRAP_T</h2>
+					<ul>
+						<li>T轴重复方式</li>
+						<li>取值：gl.REPEAT (default value)、gl.CLAMP_TO_EDGE、gl.MIRRORED_REPEAT</li>
+					</ul>
+
+					<aside class="notes">
+						1、gl.REPEAT (default value)(重复)<br/>
+						2、gl.CLAMP_TO_EDGE (使用纹理图像的边缘值)<br/>
+						3、gl.MIRRORED_REPEAT (镜像对称式)<br/>
+					</aside>
+				</section>			
+
+
+				<section>
+					<h2>配置纹理</h2>
+					<p class="fragment" data-fragment-index="0">1.对纹理图像进行y轴反转 gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, 1);</p>
+					<p class="fragment" data-fragment-index="0">2.开启0号纹理单元 gl.activeTexture(gl.TEXTURE0);</p>
+					<p class="fragment" data-fragment-index="0">3.向target绑定纹理对象 gl.bindTexture(gl.TEXTURE_2D, texture);</p>
+					<p class="fragment" data-fragment-index="0">4.配置纹理参数 gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);</p>
+					<p class="fragment" data-fragment-index="0">5.配置纹理图像 gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGB, gl.RGB, gl.UNSIGNED_BYTE, image);</p>
+					<p class="fragment" data-fragment-index="0">6.将0号纹理传递给着色器 gl.uniform1i(u_Sampler, 0);</p>
+
+					<aside class="notes">
+						1、pixelStorei：是用于图像预处理的函数<br/>
+						2、activeTexture：用来激活指定的纹理单元<br/>
+						3、纹理单元的数量视实现而定， 你可以通过访问常量 MAX_COMBINED_TEXTURE_IMAGE_UNITS 来获取这个值。按照规范来说，最少是 8 个，通过浏览器测试目前是：35661
+						4、gl.bindTexture： 立方体映射纹理gl.TEXTURE_CUBE_MAP
+					</aside>
+				</section>
+
+
+				<section>
+					<h2>资料</h2>
+					<ul>
+						<li>https://webglfundamentals.org/index.html</li>
+						<li>https://github.com/fem-d/webGL</li>
+						<li>http://webgl-lesson.wysaid.org/</li>
+						<li>https://csgrandeur.gitbooks.io/webgl-learn/content/</li>
+						<li>http://www.tentou.cn/2017/03/21/HTML5%E5%92%8CWebGL%E7%BC%96%E7%A8%8B/</li>
+					</ul>
+				</section>
+
+				
+
+				<section>
+					<h2>Thanks!</h2>
+					<p>Q&A</p>
+				</section>
+
+			</div>
+
+		</div>
+
+		<script src="lib/js/head.min.js"></script>
+		<script src="js/reveal.js"></script>
+
+		<script>
+
+			// Full list of configuration options available at:
+			// https://github.com/hakimel/reveal.js#configuration
+			Reveal.initialize({
+				controls: true,
+				progress: true,
+				history: true,
+				center: true,
+
+				transition: 'slide', // none/fade/slide/convex/concave/zoom
+
+				// Optional reveal.js plugins
+				dependencies: [
+					{ src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
+					{ src: 'plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/highlight/highlight.js', async: true, condition: function() { return !!document.querySelector( 'pre code' ); }, callback: function() { hljs.initHighlightingOnLoad(); } },
+					{ src: 'plugin/zoom-js/zoom.js', async: true },
+					{ src: 'plugin/notes/notes.js', async: true }
+				]
+			});
+
+		</script>
+
+	</body>
+</html>

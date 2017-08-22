@@ -55,11 +55,70 @@
 			<!-- Any section element inside of this container is displayed as a slide -->
 			<div class="slides">
 				<section>
-					<h1>web call native</h1>
+					<h1>WebAPP跟NativeAPP交互</h1>
 					<!--h3>webApp 跟 NativeApp 之间的交互</h3-->
 					<p>
 						<small>Created by 武许朋</small>
 					</p>
+				</section>
+
+
+				<section>
+					<h2>几种？</h2>
+					<p class="fragment" data-fragment-index="0">Web APP在Native APP 中</p>
+					<p class="fragment" data-fragment-index="1">Web APP在Native APP 外</p>
+					<aside class="notes">
+						1、分类是从WebAPP运行的环境来分类<br/>
+						2、就是WebAPP在哪里运行<br/>
+						3、因为NativeAPP 本身就是个webview，就是个浏览器<br/>
+					</aside>
+				</section>
+
+				<section>
+					<h2>Web APP在Native APP 中</h2>
+					<aside class="notes">
+						1、常见的混合APP开发,phonegap<br/>
+						外层是一个Native壳，里面用HTML开发<br/>
+					</aside>
+				</section>
+
+
+				<section>
+					<h2>交互方式</h2>
+					<aside class="notes">
+						1、native和js之间如何通信<br/>
+						2、native调js<br/>
+						3、js调native
+					</aside>
+				</section>
+
+				<section>
+					<h2>native调js</h2>
+					<p>代码注入</p>
+					<p>android: webView.loadUrl</p>
+					<p>ios: stringByEvaluatingJavaScriptFromString</p>
+				</section>
+
+
+				<section>
+					<h2>js调native</h2>
+					<p>网络拦截:自定义协议url</p>
+					<p>方法重写：console.log</p>
+					<aside class="notes">
+						1、网络拦截：跟客户端约定一个自定义的协议头 jsbridge://
+					</aside>
+				</section>
+
+				<section>
+					<h2>Web APP在Native APP 外</h2>
+					<!--h3>webApp 跟 NativeApp 之间的交互</h3-->
+					<aside class="notes">
+						1、以上就是WebAPP在NativeAPP里面的一些交互方式<br/>
+						2、这些都有原声的API支持，有成熟的开发方案<br/>
+						3、需要什么接口都可以直接跟客户端同学沟通<br/>
+						4、但是WebAPP不在NativeAPP中就比较麻烦了<br/>
+						5、这是今天分享的主要内容
+					</aside>
 				</section>
 
 				<section>
@@ -67,15 +126,13 @@
 					<p class="fragment" data-fragment-index="0">判断是否安装某个APP</p>
 					<p class="fragment" data-fragment-index="1">进入客户端指定页面</p>
 					<p class="fragment" data-fragment-index="2">获取信息</p>
-					<p class="fragment" data-fragment-index="3">跟客户端进行交互（页面在APP内部）</p>
 
 					<aside class="notes">
-						1A、推广下载页面显示 下载、打开 按钮<br/>
-						1B、访问web站点时判断已安装客户端自动调起客户端<br/><br/>
+						1、推广下载页面显示 下载、打开 按钮<br/>
+						2、访问web站点时判断已安装客户端自动调起客户端<br/><br/>
 
-						2A、获取定位信息（浏览器定位（geolocation）慢、不准、需要用户同意）<br/>
-						2B、获取手机imei，可以将APP跟web用户的日志关联起来<br/>
-						2C、获取其他浏览器没有提供的信息<br/>
+						3、获取imei、等浏览器不提供的一些信息，<br/>
+						4、获取信息的前提是Native必须已经安装了<br/>
 					</aside>
 				</section>
 
@@ -105,13 +162,26 @@
 
 
 				<section>
+					<h2>常见的一些URL Scheme</h2>
+					<p>tel://18688886666</p>
+					<p>mailto://a@b.c</p>
+					<p>sms:18688886666</p>					
+				</section>
+
+
+				<section>
 					<h2>如何使用？</h2>
 					<p>1、a标签</p>
 					<p>2、location.href="xxx";</p>
 					<p>3、iframe的方式;</p>
 					<aside class="notes">
-						一般都用iframe，因为直接使用a标签 部分浏览器在当前系统不支持该协议的时候会跳转错误页（火狐）<br/>
-						讲完上面这些，大家基本上已经了解了什么是scheme，为什么要用scheme，以及如何使用scheme；<br/>
+						1、说下这几种的区别,1,2没啥区别<br/>
+						1、通用的协议直接使用a标签，如tel，sms<br/>
+						2、自己定义的一般都用iframe<br/>
+						3、正常情况下没有在系统中注册的协议，调用后浏览器没有任何反应<br/>
+						4、但是因为直接使用a标签 部分浏览器在当前系统不支持该协议的时候会跳转错误页（火狐）<br/>
+						5、演示示例：http://share.m.map.test.so.com/test.html</br>
+						6、讲完上面这些，大家基本上已经了解了什么是scheme，为什么要用scheme，以及如何使用scheme；<br/>
 						下面讲下scheme的缺点，及浏览器的支持情况
 					</aside>
 				</section>
@@ -125,7 +195,17 @@
 					<aside class="notes">
 						冲突后不会覆盖、不会无法使用，会弹出选择框<br/>
 						没有返回值这个可以通过一些方法检测是否调用成功，但是不可能拿到返回值<br/>
-						弹框这个目前没有啥解决方案
+						弹框这个目前没有啥解决方案<br/>
+						浏览器应该有白名单机制，对于自己的服务会特殊处理
+					</aside>
+				</section>
+
+
+				<section>
+					<h2>custom scheme url 优点</h2>
+					<p class="fragment" data-fragment-index="0">无论应用是否已经启动都能调起</p>
+					<aside class="notes">
+						除了能跟调起APP外<br/>
 					</aside>
 				</section>
 
@@ -139,18 +219,18 @@
 					<h2>浏览器支持情况及弹框</h2>
 					<p class="fragment" data-fragment-index="0">
 						支持-不提示：<br/>
-						<code class="hljs">360、chrome、firefox、小米自带浏览器、酷派自带浏览器</code>
+						<code class="hljs">chrome、firefox、360搜索、搜狗、小米自带浏览器、酷派自带浏览器</code>
 					</p>
 					<p class="fragment" data-fragment-index="1">
 						支持-弹框提示：<br/>
-						<code class="hljs">UC、QQ</code>
+						<code class="hljs">360、UC、QQ</code>
 					</p>
 					<p class="fragment" data-fragment-index="2">
 						不支持<br/>
-						<code class="hljs">微信、百度</code>
+						<code class="hljs">微信、百度、手百</code>
 					</p>
 					<aside class="notes">
-						关于提示UC、QQ还有个区别，QQ会先判断确认有应用能处理才弹框，UC不管支不支持都弹框<br/>
+						UC老版本不管支不支持都弹框，最新的已经没有这个问题了<br/>
 
 						微信、百度浏览器是使用白名单的方式，如百度地图的以下scheme就支持：<br/>
 						baidumap://map/gopage?page=offlinemap&src=webapp.default.indexnearbypg.indexrecom<br/>
@@ -167,7 +247,9 @@
 				<section>
 					<h2>关于无返回值，不确定调用是否成功的问题</h2>
 					<aside class="notes">
-						正常情况下只要调用成功了，肯定会打开对应的APP，这时候浏览器就隐藏了
+						1、调用完后浏览器不会通知你是否成功<br/>
+						2、只能通过一些状态来检测<br/>
+						3、正常情况下只要调用成功了，肯定会打开对应的APP，这时候浏览器就隐藏了
 					</aside>
 				</section>
 
@@ -177,36 +259,62 @@
 					<p class="fragment" data-fragment-index="0">
 						可以通过判断浏览器是否隐藏来判断
 						<code class="hljs" style="text-align:left;display:inline-block;padding:10px;">
-							document.hidden<br/>
-							document.webkitHidden<br/>
-							document.msHidden<br/>
-							document.mozHidden<br/>
+							document.visibilityState<br/>
+							document.hidden||webkitHidden||mozHidden||msHidden<br/>
 						</code>
 					</p>
+					<aside class="notes">
+						1、之前某个版本的UC只支持webkitHidden
+					</aside>
 				</section>
 
 				<section>
-					<p class="fragment" data-fragment-index="0">
-						document.hidden：<br/>
-						<code class="hljs">qq、360、chrome、firefox、ie</code>
-					</p>
-					<p class="fragment" data-fragment-index="1">
-						document.webkitHidden：<br/>
-						<code class="hljs">UC、qq、360、、chrome</code>
-					</p>
-					<p class="fragment" data-fragment-index="2">
-						document.mozHidden<br/>
-						<code class="hljs">firefox</code>
-					</p>
-					<p class="fragment" data-fragment-index="2">
-						document.msHidden<br/>
-						<code class="hljs">IE</code>
-					</p>
+					<h2>document.visibilityState</h2>
+					<p>visible:页面内容可见</p>
+					<p>hidden:页面内容可见</p>
+					<p>prerender:网页内容被预渲染并且用户不可见</p>
+					<p>unloaded:如果文档被卸载，那么这个值将被返回</p>
+				</section>				
+
+
+
+				<section>
+					<h2>如何判断？</h2>
+					<aside class="notes">
+						1、html5的一个API，除了搜索APP，其他的webview都支持<br/>
+						2、演示示例：http://share.m.map.test.so.com/test1.html</br>
+					</aside>
+				</section>
+
+				
+				<section>
+					<h2>setTimeout?</h2>
 				</section>
 
 
 				<section>
-					<h2>是否可以使用<br/><br/>setTimeout、<br/>setInterval<br/><br/>检测？</h2>
+					<h2>visibilitychange?</h2>
+					<aside class="notes">
+						1、document的visibilitychange事件进行判断<br/>
+						1、搜索APP，在APP进入后台后hidden值不正常<br/>
+						2、示例目前是使用setTimeout，延时10ms的频率调用<br/>
+						3、演示示例：http://share.m.map.test.so.com/test2.html<br/>
+					</aside>
+				</section>
+
+
+				<section>
+					<h2>不同的场景使用不同的方法</h2>
+					<p>调用失败后，执行另外的逻辑需要使用setTimeout</p>
+					<p>只用来记录是否打开成功使用document的visibilitychange</p>
+				</section>
+
+
+				<section>
+					<h2>刚才的示例使用的是setTimeout，延时10ms的频率调用，为什么要这么快？</h2>
+					<aside class="notes">
+						1、部分浏览器在进入后台后会停止执行JS setTimeout
+					</aside>
 				</section>
 
 
@@ -230,72 +338,6 @@
 				</section>
 
 
-				<section>
-					<h2>弹出对话框的时候是否会阻塞浏览器的执行？</h2>
-				</section>
-
-
-				<section>
-					<p>1、是否执行对话框</p>
-					<p>2、多个程序选择对话框</p>
-				</section>
-
-				<section>
-					<h2>不会</h2>
-				</section>
-
-
-				<section>
-					<pre>
-						<code data-trim contenteditable>
-for(var i=0,l=tag_a.length;l--;i++){
-    tag_a[i].addEventListener('click', function(e){
-        var href = this.getAttribute('href'),
-            applink = this.getAttribute('data-applink'),
-            timeout = 2000,
-            delay_time = 10,
-            click_time = (new Date).getTime();
-
-        if(!applink){
-            return false;
-        }
-
-        app.openWithIframe(applink);
-
-        timer1 = setInterval(function(){
-
-            if(document.hidden || document.webkitHidden || document.msHidden || document.mozHidden){
-                
-                clearInterval(timer1);
-                clearTimeout(timer2);
-            }
-
-        },1);
-
-        timer2 = setTimeout(function(){
-            clearInterval(timer1);
-
-            if(document.hidden || document.webkitHidden || document.msHidden || document.mozHidden || now - click_time - delay_time > timeout){
-                return false;
-            }
-            location.href = href;
-        },timeout);
-
-        e.preventDefault();
-    }, false);
-}
-						</code>
-					</pre>
-
-					<aside class="notes">
-						这里有个坑，把这两项写一个 filter 中会导致不会在桌面创建入口
-					</aside>
-				</section>
-
-
-
-
-
 
 				<section>
 					<h2>scheme 可以定义多个(ios没有确认)</h2>
@@ -303,7 +345,7 @@ for(var i=0,l=tag_a.length;l--;i++){
 
 
 				<section>
-					<p>Android规定 支持http、https，但国内浏览器都不支持，估计应该是不想将流量倒给其他应用</p>
+					<p>Android规定 支持http、https，不过大部分浏览器都不支持，目前测试就chrome支持</p>
 				</section>
 
 				<section>
@@ -374,6 +416,15 @@ android:theme="@style/AppTheme.NoActionBar">
 
 				<section>
 					<h2>什么是local webserver？</h2>
+					<aside class="notes">
+						1、演示示例：http://share.m.map.test.so.com/test4.html</br>
+					</aside>
+				</section>
+
+
+				<section>
+					<h2>本次分享演示工具：</h2>
+					<p><a href="http://tc.sigma-rt.com.cn/">total control</a></p>
 				</section>
 
 

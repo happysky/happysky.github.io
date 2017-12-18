@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html>
+<head class="wechat_style">
+    <meta charset="utf-8" />
+    <title>360搜索·地图Android客户端</title>
+    <meta name="keywords" content="360搜索·地图Android客户端">
+    <meta name="description" content="360搜索·地图Android客户端">
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport" />
+    <meta content="yes" name="apple-mobile-web-app-capable" />
+    <meta content="black" name="apple-mobile-web-app-status-bar-style" />
+        <script>
+        (function(){
+            var getRatio = function(){
+                var width = document.documentElement.clientWidth;                
+                var ratio = width / 360;
+
+                return ratio;
+            }
+            var getSize = function(){
+                var width = document.documentElement.clientWidth;
+                var height = document.documentElement.clientHeight;
+                if(/micromessenger/i.test(navigator.userAgent)){
+                    document.documentElement.className="wechat_style";
+                }
+
+                if(height<570){
+                    //height = 570;
+                }
+
+                var fontSize = height / 1.77;
+
+                //alert(width + ',' + height);
+
+                return {
+                    fontSize: fontSize,
+                    height: height
+                }
+            }
+
+            var size = getSize();
+
+
+            document.write("<style>html{font-size:"+ size.fontSize + "px;}.screen_height{height:"+ size.height +"px}</style>");
+
+            window.onresize=function(){
+                //var size = getSize();
+                //document.documentElement.style.fontSize = size.fontSize + "px";
+            }
+        })();
+    </script>
+    <style>
+    html,body,div,a{
+    	margin:0;
+    	padding:0;
+    }
+    .wechat_style,.wechat_style body{
+        height: 100%;
+        overflow: hidden;
+    }
+    .wechat_style .wechat_bg{
+        width: 100%;
+        height: 100%;
+        background: rgba(0,0,0,0.7) url(img/wechat.png) no-repeat;
+        background-size: contain;
+        position: absolute;
+        top: 0;
+        z-index: 100;
+    }
+    .container{
+
+    }
+    .container .page_1{
+    	position: relative;
+    	background:url('img/page1_bg.png') no-repeat;
+    	background-size: cover;
+    	overflow: hidden;
+    }
+    .container .page_1 .bg_1_1{
+    	width:0.3416666666666667rem;
+    	height:0.2847222222222222rem;
+    	margin:auto;
+    	margin-top: 0.09722222222222222rem;
+    	background:url('img/page1_bg_1.png') no-repeat;
+    	background-size: cover;
+    }
+    .container .page_1 .bg_1_2{
+    	position: absolute;
+    	width:0.7791666666666667rem;
+    	height:0.9486111111111111rem;
+    	bottom:0.287777777777777776rem;
+    	left: 50%;
+    	margin-left: -0.38958333333333334rem;
+    	background:url('img/page1_bg_2.png') no-repeat;
+    	background-size: cover;
+    }
+    .container .page_1 .bg_1_3{
+    	position: absolute;
+    	width:0.4583333333333333rem;
+    	height:0.175rem;
+    	bottom: 0.037777777777777776rem;
+    	left: 50%;
+    	margin-left: -0.22916666666666666rem;
+    	background:url('img/page1_bg_3.png') no-repeat;
+    	background-size: contain;
+    }
+    .container .page_1 .bg_1_3 a{
+    	display: block;
+    	width: 100%;
+    	height: 100%;
+    }
+    .container .page_2{
+    	position: relative;
+    }
+    .container .page_2 .bg_2_1{
+    	position: absolute;
+    	width:0.6986111111111111rem;
+    	height:0.15694444444444444rem;
+    	top:0.2611111111111111rem;
+    	left: 50%;
+    	margin-left: -0.38958333333333334rem;
+    	background:url('img/page2_bg_1.png') no-repeat;
+    	background-size: contain;
+    }
+    .container .page_2 .bg_2_2{
+    	position: absolute;
+    	width:0.8597222222222223rem;
+    	height:1.2027777777777777rem;
+    	top: 0.49027777777777776rem;
+    	left: 50%;
+    	margin-left: -0.42986111111111114rem;
+    	background:url('img/page2_bg_2.png') no-repeat;
+    	background-size: cover;
+    }
+
+
+    .container .page_3{
+    	position: relative;
+    	background:url('img/page3_bg.png') no-repeat center 1.07rem;
+    	background-size: contain;
+    }
+    .container .page_3 .bg_3_1{
+    	position: absolute;
+    	width:0.43194444444444446rem;
+    	height:0.20694444444444443rem;
+    	top:0.1711111111111111rem;
+    	left: 50%;
+    	margin-left: -0.2326388888888889rem;
+    	background:url('img/page3_bg_1.png') no-repeat;
+    	background-size: contain;
+    }
+    .container .page_3 .bg_3_2{
+        position: absolute;
+        width: 0.6430555555555556rem;
+        height: 0.975rem;
+        top: 0.49027777777777776rem;
+        left: 50%;
+        margin-left: -0.2515277777777778rem;
+        background: url(img/page3_bg_2.png) no-repeat;
+        background-size: contain;
+    }
+
+    .container .page_4{
+    	position: relative;
+    }
+    .container .page_4 .bg_4_1{
+    	position: absolute;
+    	width:0.7291666666666666rem;
+    	height:0.15694444444444444rem;
+    	top:0.1711111111111111rem;
+    	left: 50%;
+    	margin-left: -0.3645833333333333rem;
+    	background:url('img/page4_bg_1.png') no-repeat;
+    	background-size: contain;
+    }
+    .container .page_4 .bg_4_2{
+        position: absolute;
+        width: 100%;
+        height: 1.0333333333333334rem;
+        top: 0.49027777777777776rem;
+        background: url(img/page4_bg_2.png) no-repeat center;
+        background-size: contain;
+    }
+
+
+    .container .page_5{
+    	position: relative;
+    	background:url('img/page5_bg.png') no-repeat center 1.04rem;
+    	background-size: contain;
+    }
+    .container .page_5 .bg_5_1{
+    	position: absolute;
+    	width:0.6319444444444444rem;
+    	height:0.15694444444444444rem;
+    	top:0.1711111111111111rem;
+    	left: 50%;
+    	margin-left: -0.3159722222222222rem;
+    	background:url('img/page5_bg_1.png') no-repeat;
+    	background-size: contain;
+    }
+    .container .page_5 .bg_5_2{
+    	position: absolute;
+    	width:0.5930555555555556rem;
+    	height:0.9638888888888889rem;
+    	top: 0.49027777777777776rem;
+    	left: 50%;
+    	margin-left: -0.2965277777777778rem;
+    	background:url('img/page5_bg_2.png') no-repeat;
+    	background-size: cover;
+    }
+
+    .container .page_6{
+        position: relative;
+        height: 0.3875rem;
+        background:url('img/page6_bg.png') no-repeat center;
+        background-size: cover;
+    }
+    .container .page_6 .bg_6_1{
+        position: absolute;
+        width:0.49722222222222223rem;
+        height:0.2638888888888889rem;
+        top: 0.07rem;
+        left: 50%;
+        margin-left: -0.24861111111111112rem;
+        background:url('img/page6_bg_1.png') no-repeat;
+        background-size: contain;
+    }
+    .container .page_6 .bg_6_1 a{
+        display: block;
+        width: 100%;
+        height: 100%;
+    }
+    
+    </style>
+</head>
+<body>
+    <div class="wechat_bg"></div>
+	<div class="container">
+		<div class="screen_height page_1">
+			<div class="bg_1_1"></div>
+			<div class="bg_1_2"></div>
+			<div class="bg_1_3"><a href="<?php echo $downloadUrl?>"></a></div>
+		</div>
+		<div class="screen_height page_2">
+			<div class="bg_2_1"></div>
+			<div class="bg_2_2"></div>
+		</div>
+		<div class="screen_height page_3">
+			<div class="bg_3_1"></div>
+			<div class="bg_3_2"></div>
+		</div>
+		<div class="screen_height page_4">
+			<div class="bg_4_1"></div>
+			<div class="bg_4_2"></div>
+		</div>
+		<div class="screen_height page_5">
+			<div class="bg_5_1"></div>
+			<div class="bg_5_2"></div>
+		</div>
+        <div class="page_6">
+            <div class="bg_6_1">
+                <a href="<?php echo $downloadUrl?>"></a>
+            </div>
+        </div>
+	</div>
+    <script>
+        (function(){
+            var ua = navigator.userAgent;
+            if(/micromessenger/i.test(ua)){
+                return false;
+            }
+            var urltojson= function(url) {
+                var hash;
+                var obj = {};
+                var off = url.indexOf('#');
+                if (off > 0) {
+                    url = url.substring(0, off);
+                }
+                var params_str = url.split('?')[1] || "";
+                var hashes = params_str.split('&') || [];
+                for (var i = 0; i < hashes.length; i++) {
+                    hash = hashes[i].split('=');
+
+                    if(!hash[0]){
+                        continue;
+                    }
+                    try{
+                        obj[hash[0]] = decodeURIComponent(hash[1]);
+                    }catch(e){
+                        obj[hash[0]] = hash[1];
+                    }
+
+                }
+                return obj;
+            }
+            var updateparamsToUrl = function(url, params, opts){
+                params = params || {};
+                opts = opts || {};
+                if(!url){
+                    return false;
+                }
+
+                var cur_path = url.replace(/[\?|#].*/,''),
+                    cur_params = urltojson(url),
+                    cur_hash = url.split('#')[1],
+                    is_remove = opts.remove || false,
+                    all_params = cur_params,
+                    all_params_arr = [],
+                    all_params_str;
+
+
+                for(var j in params){
+                    all_params[j] = params[j];
+                }
+
+                for(var i in all_params){
+                    if(!(is_remove && params[i])){
+                        all_params_arr.push(i + '=' + all_params[i]);
+                    }
+                }
+
+                all_params_str = all_params_arr.join('&');
+
+                return cur_path + (all_params_str ? '?' + all_params_str : '') + (cur_hash ? '#' + cur_hash : '');
+
+            };
+
+            var href = window.location.href;
+            var downloadUrl = "<?php echo $downloadUrl?>";
+            if(href.indexOf('reload') == -1){
+                window.location.href = updateparamsToUrl(href, {'reload': 1});
+            }else{
+                history.replaceState("","",updateparamsToUrl(href, {'reload': 1}, {'remove': true}));
+                downloadUrl && window.open(downloadUrl);
+            }
+            
+            
+        })();
+        
+    </script>
+</body>
+</html>
